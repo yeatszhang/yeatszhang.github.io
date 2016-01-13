@@ -4,7 +4,7 @@
   <title><![CDATA[yeatzhang's Blog]]></title>
   <link href="http://yeatszhang.github.io/atom.xml" rel="self"/>
   <link href="http://yeatszhang.github.io/"/>
-  <updated>2016-01-13T14:38:47+08:00</updated>
+  <updated>2016-01-13T14:39:56+08:00</updated>
   <id>http://yeatszhang.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
@@ -26,6 +26,8 @@
 <li>选择加载插件机制 —— babel<strong>不再默认加载es2015转义机制</strong>，需要手动声明要使用的插件。 为了提供更好的api，所有的tansformer现在是完全独立的</li>
 <li></li>
 </ul>
+
+<p><img src="media/14465243632441/153839-106.jpg" alt="153839-106"/></p>
 
 ]]></content>
   </entry>
