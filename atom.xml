@@ -1,104 +1,24 @@
-<!doctype html>
-<html class="no-js" lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[yeatzhang's Blog]]></title>
+  <link href="http://yeatszhang.github.io/atom.xml" rel="self"/>
+  <link href="http://yeatszhang.github.io/"/>
+  <updated>2016-01-13T14:38:47+08:00</updated>
+  <id>http://yeatszhang.github.io/</id>
+  <author>
+    <name><![CDATA[]]></name>
     
-  yeatzhang's Blog
+  </author>
+  <generator uri="http://www.mweb.im/">MWeb</generator>
   
-
-  </title>
-  <link href="atom.xml" rel="alternate" title="yeatzhang's Blog" type="application/atom+xml">
-    <link rel="stylesheet" href="asset/css/foundation.min.css" />
-    <link rel="stylesheet" href="asset/css/docs.css" />
-    <script src="asset/js/vendor/modernizr.js"></script>
-    <script src="asset/js/vendor/jquery.js"></script>
-  <script src="asset/highlightjs/highlight.pack.js"></script>
-  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
-  <script>hljs.initHighlightingOnLoad();</script>
-
-  </head>
-  <body class="antialiased hide-extras">
-    
-    <div class="marketing off-canvas-wrap" data-offcanvas>
-      <div class="inner-wrap">
-
-
-<nav class="top-bar docs-bar hide-for-small" data-topbar>
-
-
-  <section class="top-bar-section">
-  <div class="row">
-      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
-        <ul id="main-menu" class="left">
-        <li id="menu_item_index"><a href="index.html">HOME</a></li>
-        <li id="menu_item_archives"><a href="archives.html">Archives</a></li>
-        <li id="menu_item_about"><a href="about.html">ABOUT</a></li>
-        </ul>
-
-        <ul class="right" id="search-wrap">
-          <li>
-<form target="_blank" action="http://google.com/search" method="get">
-    <input type="hidden" name="q" value="site:yeatszhang.github.io" />
-    <input tabindex="1" type="search" name="q"  placeholder="Search"/>
-</form>
-</li>
-          </ul>
-      </div></div>
-  </div>
-  </section>
-
-</nav>
-
-        <nav class="tab-bar show-for-small">
-  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
-    <span> &nbsp; yeatzhang's Blog</span>
-  </a>
-</nav>
-
-<aside class="left-off-canvas-menu">
-      <ul class="off-canvas-list">
-       
-       <li><a href="index.html">HOME</a></li>
-    <li><a href="archives.html">Archives</a></li>
-    <li><a href="about.html">ABOUT</a></li>
-
-    <li><label>Categories</label></li>
-
-        
-            <li><a href="frontend.html">frontend</a></li>
-        
-            <li><a href="%E7%94%9F%E6%B4%BB.html">react</a></li>
-        
-            <li><a href="%E7%94%9F%E6%B4%BB.html">redux</a></li>
-         
-
-      </ul>
-    </aside>
-
-<a class="exit-off-canvas" href="#"></a>
-
-
-        <section id="main-content" role="main" class="scroll-container">
- <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
-</script>
-<div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="14465243632441.html">
-                
-                  <h1>阅读笔记</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">babel release 6.0.0</h2>
+  <entry>
+    <title type="html"><![CDATA[阅读笔记]]></title>
+    <link href="http://yeatszhang.github.io/14465243632441.html"/>
+    <updated>2015-11-03T12:19:23+08:00</updated>
+    <id>http://yeatszhang.github.io/14465243632441.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">babel release 6.0.0</h2>
 
 <ul>
 <li>希望成为一个javascript的平台化工具 —— minifiers, linters, formatters, syntax highlighters, code completion tools, type checkers, codemod tools, and every other tool to be using the same foundation to do their job better than ever before</li>
@@ -107,36 +27,16 @@
 <li></li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2015/11/3</span>
-                    
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14443597956045.html">
-                
-                  <h1>React 0.14 更新</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>看 <a href="https://facebook.github.io/react/blog/#deprecation-of-react-tools">react 0.14 changelog</a> 时简单地记录了下重点。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[React 0.14 更新]]></title>
+    <link href="http://yeatszhang.github.io/14443597956045.html"/>
+    <updated>2015-10-09T11:03:15+08:00</updated>
+    <id>http://yeatszhang.github.io/14443597956045.html</id>
+    <content type="html"><![CDATA[
+<p>看 <a href="https://facebook.github.io/react/blog/#deprecation-of-react-tools">react 0.14 changelog</a> 时简单地记录了下重点。</p>
 
 <h2 id="toc_0">install</h2>
 
@@ -249,38 +149,16 @@ var Aquarium = ({species}) =&gt; (
 <li>Add-Ons classSet 被移除， 使用 <code>classnames</code> </li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2015/10/9</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%94%9F%E6%B4%BB.html'>react</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14424564517620.html">
-                
-                  <h1>redux 源码解读</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">前言</h2>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[redux 源码解读]]></title>
+    <link href="http://yeatszhang.github.io/14424564517620.html"/>
+    <updated>2015-09-17T10:20:51+08:00</updated>
+    <id>http://yeatszhang.github.io/14424564517620.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">前言</h2>
 
 <p>redux并不局限于flux与react。redux 自身保持简洁以便适配各种场景，让社区发展出各种 redux-* 中间件或者插件，从而形成它自己的生态系统。</p>
 
@@ -602,38 +480,16 @@ connetor函数接受的两个参数指明从store的state中挑选哪些作为pr
 <li><a href="http://rackt.github.io/redux/index.html">redux git book</a></li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2015/9/17</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%94%9F%E6%B4%BB.html'>redux</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14423832687955.html">
-                
-                  <h1>impress.js 使用总结</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>在美团参加 hackathon 时，使用 impress.js 只做了一个商家上线流程的复盘工具。觉得 impress.js 很适合用于做 presentation， 因此进行一个简单地总结。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[impress.js 使用总结]]></title>
+    <link href="http://yeatszhang.github.io/14423832687955.html"/>
+    <updated>2015-09-16T14:01:08+08:00</updated>
+    <id>http://yeatszhang.github.io/14423832687955.html</id>
+    <content type="html"><![CDATA[
+<p>在美团参加 hackathon 时，使用 impress.js 只做了一个商家上线流程的复盘工具。觉得 impress.js 很适合用于做 presentation， 因此进行一个简单地总结。</p>
 
 <h2 id="toc_0">what is impress.js</h2>
 
@@ -741,38 +597,16 @@ connetor函数接受的两个参数指明从store的state中挑选哪些作为pr
 <li>impress-progress.js 显示 ppt 的进度条</li>
 </ul>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2015/9/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='frontend.html'>frontend</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14423832514781.html">
-                
-                  <h1>React使用总结</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">两种架构</h2>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[React使用总结]]></title>
+    <link href="http://yeatszhang.github.io/14423832514781.html"/>
+    <updated>2015-09-16T14:00:51+08:00</updated>
+    <id>http://yeatszhang.github.io/14423832514781.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">两种架构</h2>
 
 <p>现在使用React的开发模式主要有两种——freeMarker+React以及纯静态React页面开发。本文着重介绍纯静态React页面的开发方式。</p>
 
@@ -884,38 +718,16 @@ this.setState(newData);
 * <code>{$merge: object}</code> merge the keys of object with the target.<br/>
 * <code>{$apply: function}</code> passes in the current value to the function and updates it with the new returned value.</p>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2015/9/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%94%9F%E6%B4%BB.html'>react</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14423832214120.html">
-                
-                  <h1>openlayers with google maps 简单教程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">what is openlayer</h2>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[openlayers with google maps 简单教程]]></title>
+    <link href="http://yeatszhang.github.io/14423832214120.html"/>
+    <updated>2015-09-16T14:00:21+08:00</updated>
+    <id>http://yeatszhang.github.io/14423832214120.html</id>
+    <content type="html"><![CDATA[
+<h2 id="toc_0">what is openlayer</h2>
 
 <p>openlayers是一个高性能、功能全面的地图库。有以下特性：</p>
 
@@ -1236,38 +1048,16 @@ format.writeFeature(feature);
 
 <p><code>ol.format</code></p>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2015/9/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='frontend.html'>frontend</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14423829784031.html">
-                
-                  <h1>Redux basic tutorial</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Redux basic tutorial]]></title>
+    <link href="http://yeatszhang.github.io/14423829784031.html"/>
+    <updated>2015-09-16T13:56:18+08:00</updated>
+    <id>http://yeatszhang.github.io/14423829784031.html</id>
+    <content type="html"><![CDATA[
+<blockquote>
 <p>本文的读者为了解flux概念，熟悉react，了解es6语法的同学</p>
 </blockquote>
 
@@ -1496,38 +1286,16 @@ function thunkMiddleware(_ref) {
 
 <p>之后会总结自己阅读redux源码的一些心得，以及各功能模块的实现原理~</p>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2015/9/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%94%9F%E6%B4%BB.html'>redux</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14423828192767.html">
-                
-                  <h1>React context 填坑</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[React context 填坑]]></title>
+    <link href="http://yeatszhang.github.io/14423828192767.html"/>
+    <updated>2015-09-16T13:53:39+08:00</updated>
+    <id>http://yeatszhang.github.io/14423828192767.html</id>
+    <content type="html"><![CDATA[
+<blockquote>
 <p>文本是为了说清<code>react context</code>目前的机制是<code>owner context</code> 而不是我们以为的<code>parent context</code> 机制，并说明这两者的区别。如果已经躺过这个坑的同学就可以直接略过。</p>
 </blockquote>
 
@@ -1836,177 +1604,7 @@ App.childContextTypes = {
 React.render(React.createElement(App), document.body);
 </code></pre>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2015/9/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='%E7%94%9F%E6%B4%BB.html'>react</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
-
-
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
-
- <div class="large-4 medium-4 columns">
-  <div class="hide-for-small">
-    <div id="sidebar" class="sidebar">
-          <div id="site-info" class="site-info">
-            
-                <h1>yeatzhang's Blog</h1>
-                <div class="site-des"></div>
-                <div class="social">
-
-
-
-
-
-
-
-
-
-
-
-  <a class="rss" href="atom.xml" title="RSS">RSS</a>
-                
-              	 </div>
-          	</div>
-              <div id="site-categories" class="side-item ">
-                <div class="side-header">
-                  <h2>Categories</h2>
-                </div>
-                <div class="side-content">
-
-      	<p class="cat-list">
-        
-            <a href="frontend.html"><strong>frontend</strong></a>
-        
-            <a href="%E7%94%9F%E6%B4%BB.html"><strong>react</strong></a>
-        
-            <a href="%E7%94%9F%E6%B4%BB.html"><strong>redux</strong></a>
-         
-        </p>
-
-
-                </div>
-              </div>
-
-              <div id="site-categories" class="side-item">
-                <div class="side-header">
-                  <h2>Recent Posts</h2>
-                </div>
-                <div class="side-content">
-                <ul class="posts-list">
-	      
-		      
-			      <li class="post">
-			        <a href="14465243632441.html">阅读笔记</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14443597956045.html">React 0.14 更新</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14424564517620.html">redux 源码解读</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14423832687955.html">impress.js 使用总结</a>
-			      </li>
-		     
-		  
-		      
-			      <li class="post">
-			        <a href="14423832514781.html">React使用总结</a>
-			      </li>
-		     
-		  
-		      
-		  
-		      
-		  
-		      
-		   
-		  		</ul>
-                </div>
-              </div>
-        </div><!-- sidebar -->
-      </div><!-- hide for small -->
-</div><!-- large 4 -->
-
-</div><!-- row -->
-
- <div class="page-bottom clearfix">
-  <div class="row">
-   <p class="copyright">Copyright &copy; 2015
-Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
-Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
-  </div>
-</div>
-
-        </section>
-      </div>
-    </div>
-
+]]></content>
+  </entry>
   
-    
-
-    <script src="asset/js/foundation.min.js"></script>
-    <script>
-      $(document).foundation();
-      function fixSidebarHeight(){
-        var w1 = $('.markdown-body').height();
-          var w2 = $('#sidebar').height();
-          if (w1 > w2) { $('#sidebar').height(w1); };
-      }
-      $(function(){
-        fixSidebarHeight();
-      })
-      $(window).load(function(){
-          fixSidebarHeight();
-      });
-     
-    </script>
-
-    
-
-
-
-  </body>
-</html>
+</feed>

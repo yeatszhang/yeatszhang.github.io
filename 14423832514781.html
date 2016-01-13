@@ -1,0 +1,393 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  React使用总结 - yeatzhang's Blog
+  
+
+  </title>
+  <link href="atom.xml" rel="alternate" title="yeatzhang's Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        <li id="menu_item_index"><a href="index.html">HOME</a></li>
+        <li id="menu_item_archives"><a href="archives.html">Archives</a></li>
+        <li id="menu_item_about"><a href="about.html">ABOUT</a></li>
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" action="http://google.com/search" method="get">
+    <input type="hidden" name="q" value="site:yeatszhang.github.io" />
+    <input tabindex="1" type="search" name="q"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; yeatzhang's Blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+       
+       <li><a href="index.html">HOME</a></li>
+    <li><a href="archives.html">Archives</a></li>
+    <li><a href="about.html">ABOUT</a></li>
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="frontend.html">frontend</a></li>
+        
+            <li><a href="%E7%94%9F%E6%B4%BB.html">react</a></li>
+        
+            <li><a href="%E7%94%9F%E6%B4%BB.html">redux</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>React使用总结</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2015/9/16</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E7%94%9F%E6%B4%BB.html'>react</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h2 id="toc_0">两种架构</h2>
+
+<p>现在使用React的开发模式主要有两种——freeMarker+React以及纯静态React页面开发。本文着重介绍纯静态React页面的开发方式。</p>
+
+<h3 id="toc_1">freeMarker+React</h3>
+
+<p>由于以前是用YUI+freeMarker进行开发，为了保证以前的页面都能够正常访问，当重构老页面时会使用这种开发方式。<br/>
+在这种开发模式下由java利用freeMarker生成并Render为html，通过browserify将js打包至资源目录并在browser中加载，React将app render至div中。</p>
+
+<h3 id="toc_2">React纯静态页面</h3>
+
+<p>利用browserify使用同构的方式进行开发，直接产出html以及js文件放置到资源文件中通过文件路径访问页面。采用这种方式开发有以下优点：</p>
+
+<ul>
+<li>PreRender产出的静态资源文件加载速度快</li>
+<li>前后端只通过ajax进行交互，使得前后端分离，各自约定好接口之后就能进行开发。</li>
+<li>同构的开发模式使得功能模块可以复用，比如模板、node的一些常用模块等等。</li>
+</ul>
+
+<p>需要注意代码能同时在browser与node环境下执行，否则会出问题。当使用bom对象时，在componentDidMount生命周期中运行，此时node环境下已经完成了first render。</p>
+
+<h2 id="toc_3">构建方式</h2>
+
+<p>在node环境下通过<code>React.renderToString</code>方法生成html，通过这种方式生成的标签会带有data-reactid属性，储存server render结果的校验值。<br/>
+当在browser中<code>React.render</code>时会检查校验值是否一致，保证node以及browser环境下render的结果一致。因此开发过程中一定要保证render的结果保持一致，如果需要在browser中插入dom节点，可以使用insert等操作。禁止state以及props在两个环境下值不同。<br/>
+如果通过校验，则React不会重新生成dom，只将事件监听器挂载在对应的节点下。</p>
+
+<h2 id="toc_4">应用架构</h2>
+
+<p>采用flux的思想来组织应用，具体的方案我推荐facebook的flux或者reflux，这也是现在Github中获星最多的flux实现方案。两者的主要区别是reflux不通过Dispatcher来控制action的分发，reflux中使用了较多的magic来使得代码更加简洁高效。</p>
+
+<p>如果项目的复杂程度不高（没有多个互相关联的store），我推荐使用Reflux，一般情况下其实一个store就够了，而且避免了处理store之间的通信问题。</p>
+
+<pre><code>╔═════════╗       ╔════════╗       ╔═════════════════╗
+║ Actions ║──────&gt;║ Stores ║──────&gt;║ View Components ║
+╚═════════╝       ╚════════╝       ╚═════════════════╝
+     ^                                      │
+     └──────────────────────────────────────┘
+</code></pre>
+
+<p>若项目较为庞大，考虑到代码的可控性、直观，以及更好地去控制各store之间的响应逻辑，使用flux更合适。</p>
+
+<h3 id="toc_5">优点</h3>
+
+<p>采用flux来构建应用有以下优势：</p>
+
+<ol>
+<li>将state在store中统一进行管理，实现业务与组建的分离，代码结构更加清晰。</li>
+<li>由于action在store中进行监听，因此事件不需要再一层层通过props来进行传递，简化代码，而且也更容易将应用拆分成更细粒度的模块。</li>
+<li>尽量使用props的情况下，代码可预测性很强。</li>
+</ol>
+
+<h2 id="toc_6">组件开发</h2>
+
+<ol>
+<li>react认为组件就是一个状态集，尽可能使得组件只拥有props。</li>
+<li>当组件需要有自己的处理逻辑时需要用到state,比如控制input的value，弹出层自动隐藏、显示的逻辑等等。</li>
+<li>state并不会随着porps的更新而改变，因此在使用 state 时一定要注意是否有 componentWillReceiveProps。</li>
+<li>业务代码为了方便以及速度可以不写 PropTypes，但是可复用的组件使用 PropTypes 来保证组件的正常运行是必要的，组件中的工具方法可以抽取出来写测试用例。</li>
+</ol>
+
+<h3 id="toc_7">setState</h3>
+
+<p>state为key-value的集合，一般来说value都是基本类型，当state的数据结构层次很深的时候，操作state就会变成很头疼的事情。</p>
+
+<p><strong>深拷贝</strong></p>
+
+<pre><code>// shallow copy
+var state = deepCopy(this.state);
+state.valueWantChange = vale;
+this.setState(state);
+</code></pre>
+
+<p>深拷贝方法没有问题，但由于deepCopy效率很低，一般都不推荐使用。</p>
+
+<p><strong>forceUpdate</strong></p>
+
+<pre><code>this.state.valueWantChange = vale;
+this.forceUpdate(); // this.setState(this.state);
+</code></pre>
+
+<p>在以下两种情况会用到 forceUpdate</p>
+
+<ul>
+<li>手动更改了 state 之后需要触发 render</li>
+<li>做了除更改props和state之外的操作后，需要render。</li>
+</ul>
+
+<p>但是使用forceUpdate 会跳过 shouldComponentUpdate 的过程，会触发子组件的所有lifeCycle方法（包括shouldComponentUpdate）从而造成性能的浪费。因此为了组件更加清晰高效，应该避免使用forceUpdate。</p>
+
+<p><strong>Immutability Helpers</strong></p>
+
+<p>我推荐使用React.addons<code>import react from &#39;react/addons&#39;</code>来管理<code>state</code>。<br/>
+You can alleviate this by only copying objects that need to be changed and by reusing the objects that haven&#39;t changed. </p>
+
+<pre><code>var newData = React.addons.update(myData, {
+  x: {y: {z: {$set: 7}}},
+  a: {b: {$push: [9]}}
+});
+this.setState(newData);
+</code></pre>
+
+<p>下面是update的基本语法。如果用过mongo应该对此十分熟悉。</p>
+
+<p><code>React.addons.update</code><br/>
+* <code>{$push: array}</code> push() all the items in array on the target.<br/>
+* <code>{$unshift: array}</code> unshift() all the items in array on the target.<br/>
+* <code>{$splice: array of arrays}</code> for each item in arrays call splice() on the target with the parameters provided by the item.<br/>
+* <code>{$set: any}</code> replace the target entirely.<br/>
+* <code>{$merge: object}</code> merge the keys of object with the target.<br/>
+* <code>{$apply: function}</code> passes in the current value to the function and updates it with the new returned value.</p>
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14423832687955.html" 
+          title="Previous Post: impress.js 使用总结">&laquo; impress.js 使用总结</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14423832214120.html" 
+          title="Next Post: openlayers with google maps 简单教程">openlayers with google maps 简单教程 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>yeatzhang's Blog</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="frontend.html"><strong>frontend</strong></a>
+        
+            <a href="%E7%94%9F%E6%B4%BB.html"><strong>react</strong></a>
+        
+            <a href="%E7%94%9F%E6%B4%BB.html"><strong>redux</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="14465243632441.html">阅读笔记</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14443597956045.html">React 0.14 更新</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14424564517620.html">redux 源码解读</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14423832687955.html">impress.js 使用总结</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14423832514781.html">React使用总结</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>

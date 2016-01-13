@@ -1,0 +1,394 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  React 0.14 更新 - yeatzhang's Blog
+  
+
+  </title>
+  <link href="atom.xml" rel="alternate" title="yeatzhang's Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        <li id="menu_item_index"><a href="index.html">HOME</a></li>
+        <li id="menu_item_archives"><a href="archives.html">Archives</a></li>
+        <li id="menu_item_about"><a href="about.html">ABOUT</a></li>
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" action="http://google.com/search" method="get">
+    <input type="hidden" name="q" value="site:yeatszhang.github.io" />
+    <input tabindex="1" type="search" name="q"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; yeatzhang's Blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+       
+       <li><a href="index.html">HOME</a></li>
+    <li><a href="archives.html">Archives</a></li>
+    <li><a href="about.html">ABOUT</a></li>
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="frontend.html">frontend</a></li>
+        
+            <li><a href="%E7%94%9F%E6%B4%BB.html">react</a></li>
+        
+            <li><a href="%E7%94%9F%E6%B4%BB.html">redux</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>React 0.14 更新</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2015/10/9</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E7%94%9F%E6%B4%BB.html'>react</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <p>看 <a href="https://facebook.github.io/react/blog/#deprecation-of-react-tools">react 0.14 changelog</a> 时简单地记录了下重点。</p>
+
+<h2 id="toc_0">install</h2>
+
+<p>在development环境下react会做warning检查，使用NODE_ENV=production来避免检查，提高react的速度。</p>
+
+<h2 id="toc_1">major change</h2>
+
+<h3 id="toc_2">Two Packages: React and React DOM</h3>
+
+<p>拆分为 <code>react</code> <code>react-dom</code> 两个类库。</p>
+
+<ul>
+<li>react
+
+<ul>
+<li>createElement</li>
+<li>createClass</li>
+<li>Component</li>
+<li>PropTypes</li>
+<li>Children</li>
+</ul></li>
+<li>react-dom
+
+<ul>
+<li>render</li>
+<li>unmountComponentAtNode</li>
+<li>findDOMNode</li>
+<li>react-dom/server
+
+<ul>
+<li>renderToString</li>
+<li>renderToStaticMarkup</li>
+</ul></li>
+</ul></li>
+<li><p>addons 被移到独立的包中</p>
+
+<ul>
+<li>react-addons-clone-with-props</li>
+<li>react-addons-create-fragment</li>
+<li>react-addons-css-transition-group</li>
+<li>react-addons-linked-state-mixin</li>
+<li>react-addons-perf</li>
+<li>react-addons-pure-render-mixin</li>
+<li>react-addons-shallow-compare</li>
+<li>react-addons-test-utils</li>
+<li>react-addons-transition-group</li>
+<li>react-addons-update</li>
+<li>ReactDOM.unstable_batchedUpdates in react-dom.</li>
+</ul>
+
+<h3 id="toc_3">dom node refs</h3>
+
+<p>自定义的组件 refs 得到的跟以前一样是react component，而内置的组件得到的是真实的dom节点，不需要再通过<code>this.refs.giraffe.getDOMNode()</code>来得到真实的dom节点。</p></li>
+</ul>
+
+<pre><code>var Zoo = React.createClass({
+    render: function() {
+        return &lt;div&gt;Giraffe name: &lt;input ref=&quot;giraffe&quot; /&gt;&lt;/div&gt;;
+    },
+    showName: function() {
+        // Previously: var input = this.refs.giraffe.getDOMNode();
+        var input = this.refs.giraffe;
+        alert(input.value);
+    }
+});
+</code></pre>
+
+<h3 id="toc_4">Stateless functional components</h3>
+
+<p>对于简单的无状态的组件（只有一个render函数），提供新的更加简单的语法去声明。</p>
+
+<pre><code>// A functional component using an ES2015 (ES6) arrow function:
+var Aquarium = (props) =&gt; {
+  var fish = getFish(props.species);
+  return &lt;Tank&gt;{fish}&lt;/Tank&gt;;
+};
+
+// Or with destructuring and an implicit return, simply:
+var Aquarium = ({species}) =&gt; (
+  &lt;Tank&gt;
+    {getFish(species)}
+  &lt;/Tank&gt;
+);
+
+// Then use: &lt;Aquarium species=&quot;rainbowfish&quot; /&gt;
+</code></pre>
+
+<ul>
+<li>表现跟只有一个<code>render</code>函数的组件一样</li>
+<li>由于不会创建实例，添加的<code>ref</code>将会返回<code>null</code></li>
+<li>函数声明的组件将没有<code>lifecycle</code>函数，但是可以将<code>.propTypes</code> 和 <code>.defaultProps</code> 设置为该函数的属性</li>
+</ul>
+
+<h3 id="toc_5">react-tools 被取消</h3>
+
+<p>使用 <code>babel</code> 对 <code>jsx</code> 进行编译</p>
+
+<h2 id="toc_6">Breaking changes</h2>
+
+<ul>
+<li>React.initializeTouchEvents 被移除，默认支持 touch 事件</li>
+<li>Add-Ons: Due to the DOM node refs change mentioned above, TestUtils.findAllInRenderedTree and related helpers are no longer able to take a DOM component, only a custom component.</li>
+</ul>
+
+<p>会产生警告的改变</p>
+
+<ul>
+<li>props 现在不可改变， 使用 React.cloneElement</li>
+<li>React.children 不支持使用 Plain Object，使用array作为替代。也可以使用 <code>createFragment</code> 来进行迁移</li>
+<li>Add-Ons classSet 被移除， 使用 <code>classnames</code> </li>
+</ul>
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14465243632441.html" 
+          title="Previous Post: 阅读笔记">&laquo; 阅读笔记</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14424564517620.html" 
+          title="Next Post: redux 源码解读">redux 源码解读 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>yeatzhang's Blog</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="frontend.html"><strong>frontend</strong></a>
+        
+            <a href="%E7%94%9F%E6%B4%BB.html"><strong>react</strong></a>
+        
+            <a href="%E7%94%9F%E6%B4%BB.html"><strong>redux</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="14465243632441.html">阅读笔记</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14443597956045.html">React 0.14 更新</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14424564517620.html">redux 源码解读</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14423832687955.html">impress.js 使用总结</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14423832514781.html">React使用总结</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>

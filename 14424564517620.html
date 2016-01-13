@@ -1,0 +1,603 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+    
+  redux 源码解读 - yeatzhang's Blog
+  
+
+  </title>
+  <link href="atom.xml" rel="alternate" title="yeatzhang's Blog" type="application/atom+xml">
+    <link rel="stylesheet" href="asset/css/foundation.min.css" />
+    <link rel="stylesheet" href="asset/css/docs.css" />
+    <script src="asset/js/vendor/modernizr.js"></script>
+    <script src="asset/js/vendor/jquery.js"></script>
+  <script src="asset/highlightjs/highlight.pack.js"></script>
+  <link href="asset/highlightjs/styles/github.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  </head>
+  <body class="antialiased hide-extras">
+    
+    <div class="marketing off-canvas-wrap" data-offcanvas>
+      <div class="inner-wrap">
+
+
+<nav class="top-bar docs-bar hide-for-small" data-topbar>
+
+
+  <section class="top-bar-section">
+  <div class="row">
+      <div style="position: relative;width:100%;"><div style="position: absolute; width:100%;">
+        <ul id="main-menu" class="left">
+        <li id="menu_item_index"><a href="index.html">HOME</a></li>
+        <li id="menu_item_archives"><a href="archives.html">Archives</a></li>
+        <li id="menu_item_about"><a href="about.html">ABOUT</a></li>
+        </ul>
+
+        <ul class="right" id="search-wrap">
+          <li>
+<form target="_blank" action="http://google.com/search" method="get">
+    <input type="hidden" name="q" value="site:yeatszhang.github.io" />
+    <input tabindex="1" type="search" name="q"  placeholder="Search"/>
+</form>
+</li>
+          </ul>
+      </div></div>
+  </div>
+  </section>
+
+</nav>
+
+        <nav class="tab-bar show-for-small">
+  <a href="javascript:void(0)" class="left-off-canvas-toggle menu-icon">
+    <span> &nbsp; yeatzhang's Blog</span>
+  </a>
+</nav>
+
+<aside class="left-off-canvas-menu">
+      <ul class="off-canvas-list">
+       
+       <li><a href="index.html">HOME</a></li>
+    <li><a href="archives.html">Archives</a></li>
+    <li><a href="about.html">ABOUT</a></li>
+
+    <li><label>Categories</label></li>
+
+        
+            <li><a href="frontend.html">frontend</a></li>
+        
+            <li><a href="%E7%94%9F%E6%B4%BB.html">react</a></li>
+        
+            <li><a href="%E7%94%9F%E6%B4%BB.html">redux</a></li>
+         
+
+      </ul>
+    </aside>
+
+<a class="exit-off-canvas" href="#"></a>
+
+
+        <section id="main-content" role="main" class="scroll-container">
+ <script type="text/javascript">
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
+</script>
+<div class="row">
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>redux 源码解读</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2015/9/17</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='%E7%94%9F%E6%B4%BB.html'>redux</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <h2 id="toc_0">前言</h2>
+
+<p>redux并不局限于flux与react。redux 自身保持简洁以便适配各种场景，让社区发展出各种 redux-* 中间件或者插件，从而形成它自己的生态系统。</p>
+
+<h2 id="toc_1">主要关系</h2>
+
+<ul>
+<li>reducer 声明了state的初始值，以及当前state接受action对象之后处理为new state的逻辑。</li>
+<li>createStore接受reducer作为参数，返回产生的store，store其实是一个含有state的闭包，以及提供将action分发给reducer的dispatch方法。</li>
+<li>applyMiddlewares方法接受n个middlewares作为参数返回一个用于渲染creatorStore函数的方法。</li>
+<li>applyMiddleware可以向actionCreator提供store.dispatch以及getState方法，用以增强actionCreator的能力</li>
+</ul>
+
+<p>store主要包含以下三个核心方法:</p>
+
+<ul>
+<li>subscribe  注册store更新之后的回调函数</li>
+<li>getState     获取store当前state的引用，切记直接修改返回的结果</li>
+<li>dispatch     将action按顺序经过各middle处理后派发给reducer</li>
+</ul>
+
+<h2 id="toc_2">action 流程图</h2>
+
+<p><img src="http://7xksmv.com1.z0.glb.clouddn.com/redux-action+%E6%B5%81%E7%A8%8B%E5%9B%BE.png" alt="流程图"/></p>
+
+<h2 id="toc_3">createStore</h2>
+
+<p>createStore是根据reducer中的规则创建store的方法。</p>
+
+<h3 id="toc_4">特性</h3>
+
+<ol>
+<li>提供dispatch</li>
+<li>subscribe</li>
+<li>getState     // getState拿到的是state的引用！不要直接修改</li>
+<li>提供初始值initialState</li>
+</ol>
+
+<h3 id="toc_5">源码</h3>
+
+<pre><code>//此处为示意，不是 redux 的源码本身
+export default createStore(reducer, initialState) {
+    //闭包私有变量
+    let currentState = initialState
+    let currentReducer = reducer
+    let listeners = []
+
+    //返回一个包含可访问闭包变量的公有方法
+    return {
+        getState() {
+            return currentState //返回当前 state
+        },
+        subscribe(listener) {
+            let index = listeners.length
+            listeners.push(listener) //缓存 listener
+            return () =&gt; listeners.splice(i, 1) //返回删除该 listener 的函数
+        },
+        dispatch(action) {
+            //更新 currentState
+            currentState = currentReducer(currentState, action)
+            // 可以看到这里并没有用到eventEmitter等
+            listeners.slice().forEach(listener =&gt; listener())
+            return action //返回 action 对象
+        }
+    }
+}
+</code></pre>
+
+<h2 id="toc_6">action</h2>
+
+<p>action有以下特点：</p>
+
+<ul>
+<li>pure object</li>
+<li>描述reducer响应的事件类型</li>
+<li>携带所需要的数据</li>
+</ul>
+
+<h2 id="toc_7">actionCreator</h2>
+
+<p>用于描述action的dispatch的逻辑。</p>
+
+<ul>
+<li>action的重用</li>
+<li>数据的预处理</li>
+<li>action的特殊处理逻辑</li>
+</ul>
+
+<h2 id="toc_8">reducer</h2>
+
+<p>reducer应该是是一个无副作用函数，以当前的state以及action为参数，返回新的state。<br/>
+每次返回一个新State的好处是在shouldComponentUpdate过程中可以使用高性能的shallow equal。</p>
+
+<ol>
+<li>pure function</li>
+<li>接受initialState</li>
+<li>don&#39;t modify the state!!!</li>
+</ol>
+
+<pre><code>//reducer 接受两个参数，全局数据对象 state 以及 action 函数返回的 action 对象
+//返回新的全局数据对象 new state
+export default (state, action) =&gt; {
+    switch (action.type) {
+        case A:
+        return handleA(state)
+        case B:
+        return handleB(state)
+        case C:
+        return handleC(state)
+        default:
+        return state //如果没有匹配上就直接返回原 state
+    }
+}
+</code></pre>
+
+<h2 id="toc_9">combineReducers</h2>
+
+<p>将一个reducer map转换为一个reducer。方便对复杂的reducer进行功能拆分。</p>
+
+<h3 id="toc_10">problem</h3>
+
+<ol>
+<li>state 结构太复杂</li>
+<li>希望根据对应的component进行维护</li>
+</ol>
+
+<h3 id="toc_11">how to use</h3>
+
+<pre><code>var reducers = {
+    todos: (state, action) { //预期此处的 state 参数是全局 state.todos 属性
+        switch (action.type) {...} //返回的 new state 更新到全局 state.todos 属性中
+    },
+    activeFilter: (state, action) { //预期拿到 state.activeFilter 作为此处的 state
+        switch (action.type) {...} //new state 更新到全局 state.activeFilter 属性中
+    }
+}
+
+//返回一个 rootReducer 函数
+//在内部将 reducers.todos 函数的返回值，挂到 state.todos 中
+//在内部将 reducers.activeFilter 函数的返回值，挂到 state.activeFilter 中
+var rootReducer = combineReducers(reducers)
+</code></pre>
+
+<h3 id="toc_12">源码</h3>
+
+<pre><code>//combination 函数是 combineReducers(reducers) 的返回值，它是真正的 rootReducer
+//finalReducers 是 combineReducers(reducers) 的 reducers 对象去掉非函数属性的产物
+ //mapValue 把 finalReducers 对象里的函数，映射到相同 key 值的新对象中
+function combination(state = defaultState, action) {
+    var finalState = mapValues(finalReducers, (reducer, key) =&gt; {
+      var newState = reducer(state[key], action); //这里调用子 reducer
+      if (typeof newState === &#39;undefined&#39;) {
+        throw new Error(getErrorMessage(key, action));
+      }
+      return newState; //返回新的子 state
+    });
+    //...省略一些业务无关的代码
+    return finalState; //返回新 state
+ };
+
+function mapValues(obj, fn) {
+  return Object.keys(obj).reduce((result, key) =&gt; {
+    result[key] = fn(obj[key], key);
+    return result;
+  }, {});
+}
+
+</code></pre>
+
+<h2 id="toc_13">applyMiddleWares</h2>
+
+<h3 id="toc_14">problem</h3>
+
+<ul>
+<li>异步action</li>
+<li>promise</li>
+<li>个性化 action 响应</li>
+<li>log</li>
+</ul>
+
+<h3 id="toc_15">描述</h3>
+
+<p>接受 middleWares 将 store 修饰为使用了 middlwares 的 store，其实是用被高阶函数修饰过的dispatch替换掉了原来的dispatch。</p>
+
+<h3 id="toc_16">usage</h3>
+
+<pre><code>var craeteStoreWithMiddleWare = applyMiddleWare(thunk)(createStore);
+//redux-thunk
+export default function thunkMiddleware({ dispatch, getState }) {
+  return next =&gt; action =&gt;
+    typeof action === &#39;function&#39; ? // action 居然是函数而不是 plain object？
+      action(dispatch, getState) : //在中间件里消化掉，让该函数控制 dispatch 时机
+      next(action); //否则调用 next 让其他中间件处理其他类型的 action
+}
+</code></pre>
+
+<h3 id="toc_17">源码</h3>
+
+<p>这里的composeMiddleware可能不是很好理解，这里有一个简单的例子方便大家理解。<a href="http://jsbin.com/xalunadofa/1/edit?js,console">http://jsbin.com/xalunadofa/1/edit?js,console</a>。 compose可以理解为倒叙一层层打包的过程，因此最后调用composedFunction的时候会顺序进入各个middlewares。</p>
+
+<pre><code>function applyMiddleware(...middlewares) {
+  return next =&gt; (...args) =&gt; {
+    const store = next(...args);
+    const middleware = composeMiddleware(...middlewares);
+
+      // dispatch 被middlWare修饰
+    function dispatch(action) {
+      const methods = {
+        dispatch,
+        getState: store.getState
+      };
+
+      return compose(
+        middleware(methods),
+        store.dispatch
+      )(action);
+    }
+
+      // 返回新的store dispatch被新的dispatch替代
+    return {
+      ...store,
+      dispatch
+    };
+  };
+}
+
+</code></pre>
+
+<h2 id="toc_18">bindActionCreator</h2>
+
+<h3 id="toc_19">源码</h3>
+
+<pre><code>//将 actionCreator 跟 dispatch 绑定在一起
+let bindActionCreator =&gt; (actionCreator, dispatch) {
+  return (...args) =&gt; dispatch(actionCreator(...args));
+}
+
+function bindActionCreators(actionCreators, dispatch) {
+  if (typeof actionCreators === &#39;function&#39;) { //如果是单个 actionCreator，绑定一词
+    return bindActionCreator(actionCreators, dispatch);
+  }
+  //返回一个改造过的「函数组合」
+  return mapValues(actionCreators, actionCreator =&gt;
+    bindActionCreator(actionCreator, dispatch)
+  )
+}
+</code></pre>
+
+<h2 id="toc_20">connector</h2>
+
+<p>connector 接受mapStateToProps, mapDispatchToProps, Component 三个参数，返回一个能够自动关联store中state以及dispatch事件的smart component</p>
+
+<p>由于connector代码过长，只对重要的几个函数进行说明。<br/>
+connetor函数接受的两个参数指明从store的state中挑选哪些作为props，以及将哪些actionCreator绑定到porps中。<br/>
+订阅store的change事件，当store更新时计算新的state，与旧state进行浅对比，如果不同则更新state，并render，否则不进行render。</p>
+
+<pre><code>    // 根据从store中select的state以及dispatch绑定的actionCreator计算新的props
+   computeNextState(props = this.props) {
+     return computeNextState(
+       this.stateProps,
+       this.dispatchProps,
+       props
+     );
+   }
+
+    // 与旧值进行shallow equal
+   updateState(props = this.props) {
+     const nextState = this.computeNextState(props);
+     if (!shallowEqual(nextState, this.state.props)) {
+       this.setState({
+         props: nextState
+       });
+     }
+   }
+
+    // 订阅change事件
+   trySubscribe() {
+     if (shouldSubscribe &amp;&amp; !this.unsubscribe) {
+       this.unsubscribe = this.store.subscribe(::this.handleChange);
+       this.handleChange();
+     }
+   }
+
+   tryUnsubscribe() {
+     if (this.unsubscribe) {
+       this.unsubscribe();
+       this.unsubscribe = null;
+     }
+   }
+
+   componentDidMount() {
+     this.trySubscribe();
+   }
+
+
+   componentWillUnmount() {
+     this.tryUnsubscribe();
+   }
+
+   handleChange() {
+     if (!this.unsubscribe) {
+       return;
+     }
+
+     if (this.updateStateProps()) {
+       this.updateState();
+     }
+   }
+
+</code></pre>
+
+<h2 id="toc_21">结语</h2>
+
+<p>欢迎大家发起pr完善文档，进行讨论。</p>
+
+<h2 id="toc_22">参考资料</h2>
+
+<ul>
+<li><a href="http://div.io/topic/1309">深入到源码：解读 redux 的设计思路与用法</a></li>
+<li><a href="http://rackt.github.io/redux/index.html">redux git book</a></li>
+</ul>
+
+      </div>
+
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+          <a href="14443597956045.html" 
+          title="Previous Post: React 0.14 更新">&laquo; React 0.14 更新</a>
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14423832687955.html" 
+          title="Next Post: impress.js 使用总结">impress.js 使用总结 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
+
+          
+
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
+
+
+
+
+ <div class="large-4 medium-4 columns">
+  <div class="hide-for-small">
+    <div id="sidebar" class="sidebar">
+          <div id="site-info" class="site-info">
+            
+                <h1>yeatzhang's Blog</h1>
+                <div class="site-des"></div>
+                <div class="social">
+
+
+
+
+
+
+
+
+
+
+
+  <a class="rss" href="atom.xml" title="RSS">RSS</a>
+                
+              	 </div>
+          	</div>
+              <div id="site-categories" class="side-item ">
+                <div class="side-header">
+                  <h2>Categories</h2>
+                </div>
+                <div class="side-content">
+
+      	<p class="cat-list">
+        
+            <a href="frontend.html"><strong>frontend</strong></a>
+        
+            <a href="%E7%94%9F%E6%B4%BB.html"><strong>react</strong></a>
+        
+            <a href="%E7%94%9F%E6%B4%BB.html"><strong>redux</strong></a>
+         
+        </p>
+
+
+                </div>
+              </div>
+
+              <div id="site-categories" class="side-item">
+                <div class="side-header">
+                  <h2>Recent Posts</h2>
+                </div>
+                <div class="side-content">
+                <ul class="posts-list">
+	      
+		      
+			      <li class="post">
+			        <a href="14465243632441.html">阅读笔记</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14443597956045.html">React 0.14 更新</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14424564517620.html">redux 源码解读</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14423832687955.html">impress.js 使用总结</a>
+			      </li>
+		     
+		  
+		      
+			      <li class="post">
+			        <a href="14423832514781.html">React使用总结</a>
+			      </li>
+		     
+		  
+		      
+		  
+		      
+		  
+		      
+		   
+		  		</ul>
+                </div>
+              </div>
+        </div><!-- sidebar -->
+      </div><!-- hide for small -->
+</div><!-- large 4 -->
+
+</div><!-- row -->
+
+ <div class="page-bottom clearfix">
+  <div class="row">
+   <p class="copyright">Copyright &copy; 2015
+Powered by <a target="_blank" href="http://www.mweb.im">MWeb</a>,&nbsp; 
+Theme used <a target="_blank" href="http://github.com">GitHub CSS</a>.</p>
+  </div>
+</div>
+
+        </section>
+      </div>
+    </div>
+
+  
+    
+
+    <script src="asset/js/foundation.min.js"></script>
+    <script>
+      $(document).foundation();
+      function fixSidebarHeight(){
+        var w1 = $('.markdown-body').height();
+          var w2 = $('#sidebar').height();
+          if (w1 > w2) { $('#sidebar').height(w1); };
+      }
+      $(function(){
+        fixSidebarHeight();
+      })
+      $(window).load(function(){
+          fixSidebarHeight();
+      });
+     
+    </script>
+
+    
+
+
+
+  </body>
+</html>
