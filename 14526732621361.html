@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  frontend - yeatzhang's Blog
+  babel6 升级总结 - yeatzhang's Blog
   
 
   </title>
@@ -82,23 +82,36 @@
 
         <section id="main-content" role="main" class="scroll-container">
  <script type="text/javascript">
-	$(function(){
-		$('#menu_item_index').addClass('is_active');
-	});
+  $(function(){
+    $('#menu_item_index').addClass('is_active');
+  });
 </script>
 <div class="row">
-	<div class="large-8 medium-8 columns">
-		<div class="markdown-body home-categories">
-		
-			<div class="article">
-                <a class="clearlink" href="14526732621361.html">
-                
-                  <h1>babel6 升级总结</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<blockquote>
+  <div class="large-8 medium-8 columns">
+      <div class="markdown-body article-wrap">
+       <div class="article">
+          
+          <h1>babel6 升级总结</h1>
+     
+        <div class="read-more clearfix">
+          <span class="date">2016/1/13</span>
+
+          <span>posted in&nbsp;</span> 
+          
+              <span class="posted-in"><a href='frontend.html'>frontend</a></span>
+           
+         
+          <span class="comments">
+            
+
+            
+          </span>
+
+        </div>
+      </div><!-- article -->
+
+      <div class="article-content">
+      <blockquote>
 <p>随着越来越多的库升级至 babel6，将项目升级至 babel6 迫在眉睫。在这里总结将 poiop 升级至 babel6 的过程中遇到的问题，供大家参考。</p>
 </blockquote>
 
@@ -240,133 +253,37 @@ const { a, b } = obj;
 
 <p>目前只发现了这些坑，目前项目已经迁移至 <code>babel6</code> 正常运行了一段时间，没有发现新的问题了。 欢迎大家补充~</p>
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                  
-                    <span class="date">2016/1/13</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='frontend.html'>frontend</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
+      </div>
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14423832687955.html">
-                
-                  <h1>impress.js 使用总结</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<p>在美团参加 hackathon 时，使用 impress.js 只做了一个商家上线流程的复盘工具。觉得 impress.js 很适合用于做 presentation， 因此进行一个简单地总结。</p>
+      <div class="row">
+        <div class="large-6 columns">
+        <p class="text-left" style="padding:15px 0px;">
+      
+        </p>
+        </div>
+        <div class="large-6 columns">
+      <p class="text-right" style="padding:15px 0px;">
+      
+          <a  href="14443597956045.html" 
+          title="Next Post: React 0.14 更新">React 0.14 更新 &raquo;</a>
+      
+      </p>
+        </div>
+      </div>
+      <div class="comments-wrap">
+        <div class="share-comments">
+          
 
-<h2 id="toc_0">what is impress.js</h2>
+          
 
-<p>impress.js 是一个用于展示的前端框架，基于大量 css3 的动画等特性。最大的特点是其基于 transform 来构建，通过空间位置的移动以及旋转来体现变化，视觉冲击性很强。<br/>
-可以在<a href="https://github.com/impress/impress.js?utm_content=buffer4bb8d&amp;utm_source=buffer&amp;utm_medium=twitter&amp;utm_campaign=Buffer">github</a>上查看 example 和 demo。</p>
+          
+        </div>
+      </div>
+    </div><!-- article-wrap -->
+  </div><!-- large 8 -->
 
 
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="14423832687955.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2015/9/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='frontend.html'>frontend</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
 
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-			<div class="article">
-                <a class="clearlink" href="14423832214120.html">
-                
-                  <h1>openlayers with google maps 简单教程</h1>
-                  <div class="a-content">
-                      
-                      <div class="a-content-text">
-                        
-                        	<h2 id="toc_0">what is openlayer</h2>
-
-<p>openlayers是一个高性能、功能全面的地图库。有以下特性：</p>
-
-<ol>
-<li>支持各种格式的tiled layers数据</li>
-<li>使用canvas的高性能vector layer</li>
-<li>细粒度丰富的交互操作</li>
-<li>支持commanjs风格</li>
-<li>开源免费</li>
-</ol>
-
-<h2 id="toc_1">why use it</h2>
-
-<p>一般来说google map api就满足需求了，但是当需要在地图上绘制大量节点时，使用svg来显示部件就会出现很严重的性能问题，一般情况下google maps等的编辑操作也不够流畅。而openlayers使用canvas作为矢量层，大量的点线面信息对于canvas的影响是较小的，而且canvas的交互也更加流畅。</p>
-
-
-                        
-                      </div>
-                  </div>
-                </a>
-                <div class="read-more clearfix">
-                  <div class="more-left left">
-                   <a href="14423832214120.html">Read more</a>&nbsp;&nbsp; 
-                    <span class="date">2015/9/16</span>
-                    <span>posted in&nbsp;</span> 
-          				  
-          					    <span class="posted-in"><a href='frontend.html'>frontend</a></span>
-          				   
-                  </div>
-                  <div class="more-right right">
-                  <span class="comments">
-                      
-
-                       
-                  </span>
-                  </div>
-                </div>
-              </div><!-- article -->
-        
-              
-
-
-			<div class="row">
-			  <div class="large-6 columns">
-			  <p class="text-left" style="padding-top:25px;">
-			   
-			  </p>
-			  </div>
-			  <div class="large-6 columns">
-			<p class="text-right" style="padding-top:25px;">
-			
-			</p>
-			  </div>
-			</div>
-		</div>
-	</div><!-- large 8 -->
 
  <div class="large-4 medium-4 columns">
   <div class="hide-for-small">

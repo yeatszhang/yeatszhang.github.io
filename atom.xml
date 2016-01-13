@@ -4,13 +4,164 @@
   <title><![CDATA[yeatzhang's Blog]]></title>
   <link href="http://yeatszhang.github.io/atom.xml" rel="self"/>
   <link href="http://yeatszhang.github.io/"/>
-  <updated>2016-01-13T15:16:16+08:00</updated>
+  <updated>2016-01-13T15:17:32+08:00</updated>
   <id>http://yeatszhang.github.io/</id>
   <author>
     <name><![CDATA[]]></name>
     
   </author>
   <generator uri="http://www.mweb.im/">MWeb</generator>
+  
+  <entry>
+    <title type="html"><![CDATA[babel6 升级总结]]></title>
+    <link href="http://yeatszhang.github.io/14526732621361.html"/>
+    <updated>2016-01-13T16:21:02+08:00</updated>
+    <id>http://yeatszhang.github.io/14526732621361.html</id>
+    <content type="html"><![CDATA[
+<blockquote>
+<p>随着越来越多的库升级至 babel6，将项目升级至 babel6 迫在眉睫。在这里总结将 poiop 升级至 babel6 的过程中遇到的问题，供大家参考。</p>
+</blockquote>
+
+<h2 id="toc_0">babel 分离为多个包</h2>
+
+<p><a href="https://www.npmjs.com/package/babel-cli">babel-cli</a> 命令行<br/>
+<a href="https://www.npmjs.com/package/babel-core">babel-core</a> node api  以及 require hook<br/>
+<a href="https://www.npmjs.com/package/babel-polyfill">babel-polyfill</a> 提供es2015的环境</p>
+
+<h2 id="toc_1">preset 机制</h2>
+
+<p>babel6 默认不再默认支持 es2015 以及 react。 需要手动在 .babelrc 中添加presets。</p>
+
+<pre><code>{
+  &quot;presets&quot;: [&quot;es2015&quot;, &quot;react&quot;]
+}
+</code></pre>
+
+<p>preset 是需要从 npm 中安装的。</p>
+
+<pre><code>npm install babel-preset-es2015 babel-preset-react --save-dev
+</code></pre>
+
+<p>stage 不再是配置项，以 presets 的形式添加。</p>
+
+<pre><code>npm install babel-preset-stage-0 --save-dev
+</code></pre>
+
+<h2 id="toc_2">export default 编译结果变化</h2>
+
+<p>源码</p>
+
+<pre><code>import a from &#39;a&#39;;
+export default a;
+</code></pre>
+
+<p><strong>babel5</strong> 编译后的结果</p>
+
+<pre><code>&#39;use strict&#39;;
+Object.defineProperty(exports, &#39;__esModule&#39;, {
+  value: true
+});
+function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { &#39;default&#39;: obj }; }
+var _a = require(&#39;a&#39;);
+var _a2 = _interopRequireDefault(_a);
+exports[&#39;default&#39;] = _a2[&#39;default&#39;];
+module.exports = exports[&#39;default&#39;];
+</code></pre>
+
+<p><strong>babel6</strong> 编译后的结果</p>
+
+<pre><code>&#39;use strict&#39;;
+Object.defineProperty(exports, &quot;__esModule&quot;, {
+  value: true
+});
+var _a = require(&#39;a&#39;);
+var _a2 = _interopRequireDefault(_a);
+function _interopRequireDefault(obj) { return obj &amp;&amp; obj.__esModule ? obj : { default: obj }; }
+exports.default = _a2.default;
+</code></pre>
+
+<p>可以发现<code>babel6</code>对 <code>export default</code> 的编译结果发生了变化，少了这句代码<code>exports[&#39;default&#39;] = _a2[&#39;default&#39;]</code>，不再将结果放置在 <code>module.exports</code> 中。<br/>
+因此 <code>export default</code> 的模块不再能通过 <code>require</code> 来引用了，只能通过 <code>import</code> 引入。并且不能通过解构的形式来引入 <code>export defaut</code> 的模块。</p>
+
+<h2 id="toc_3">可能碰到的问题</h2>
+
+<h3 id="toc_4">require es6 模块产生bug</h3>
+
+<p><strong>example</strong></p>
+
+<pre><code>// 文件 a.js
+const a = 1;
+export default a;
+ 
+// 文件 b.js
+var a = require(&#39;./a.js&#39;);
+</code></pre>
+
+<p>编译后执行会产生 bug， 因为 a.default 才是需要的模块的对象。<br/>
+可以通过以下方式来调用。</p>
+
+<pre><code>var a = require(&#39;module&#39;).default；
+</code></pre>
+
+<p>无论是 <code>export default</code>  还是 <code>moudle.exports</code> 的模块都能通过 <code>import</code> 引入，因此还是尽量通过 <code>import</code> 来引入模块吧！</p>
+
+<h3 id="toc_5">解构方式引入模块</h3>
+
+<p><strong>example</strong></p>
+
+<pre><code>// 文件 a.js
+export default {
+    a: 1,
+    b: 2
+}
+ 
+// 文件 b.js
+import { a, b } from &#39;a.js&#39;
+</code></pre>
+
+<p>使用 babel6 进行编译后执行会报错， 原因同上，导出的 object 其实是放在 default 属性中的。</p>
+
+<p>修改方法: </p>
+
+<pre><code>// 文件 a.js
+export const a = 1;  // 导出变量
+// 导出方法
+export function b() {
+ 
+}
+ 
+ 
+// 文件 b.js
+import { a, b } from &#39;a.js&#39;
+</code></pre>
+
+<p>或者</p>
+
+<pre><code>// 文件 a.js
+export default {
+    a: 1,
+    b: 2
+}
+ 
+ 
+// 文件 b.js
+import obj from &#39;a.js&#39;;
+const { a, b } = obj;
+</code></pre>
+
+<h2 id="toc_6">资料参考</h2>
+
+<ul>
+<li><a href="https://medium.com/@malyw/how-to-update-babel-5-x-6-x-d828c230ec53#.jq8gk9wbi">Quick guide: how to update Babel 5.x -&gt; 6.x</a></li>
+<li><a href="http://jamesknelson.com/the-six-things-you-need-to-know-about-babel-6/">The Six Things You Need To Know About Babel 6</a></li>
+</ul>
+
+<h2 id="toc_7">结语</h2>
+
+<p>目前只发现了这些坑，目前项目已经迁移至 <code>babel6</code> 正常运行了一段时间，没有发现新的问题了。 欢迎大家补充~</p>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[React 0.14 更新]]></title>
