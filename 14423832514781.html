@@ -132,6 +132,8 @@
 
 <p>需要注意代码能同时在browser与node环境下执行，否则会出问题。当使用bom对象时，在componentDidMount生命周期中运行，此时node环境下已经完成了first render。</p>
 
+<span id="more"></span><!-- more -->
+
 <h2 id="toc_3">构建方式</h2>
 
 <p>在node环境下通过<code>React.renderToString</code>方法生成html，通过这种方式生成的标签会带有data-reactid属性，储存server render结果的校验值。<br/>
