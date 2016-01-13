@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>
     
-  frontend - yeatzhang's Blog
+  yeatzhang's Blog
   
 
   </title>
@@ -91,120 +91,124 @@
 		<div class="markdown-body home-categories">
 		
 			<div class="article">
-                <a class="clearlink" href="14423832687955.html">
+                <a class="clearlink" href="14423832514781.html">
                 
-                  <h1>impress.js 使用总结</h1>
+                  <h1>React使用总结</h1>
                   <div class="a-content">
                       
                       <div class="a-content-text">
                         
-                        	<p>在美团参加 hackathon 时，使用 impress.js 只做了一个商家上线流程的复盘工具。觉得 impress.js 很适合用于做 presentation， 因此进行一个简单地总结。</p>
+                        	<h2 id="toc_0">两种架构</h2>
 
-<h2 id="toc_0">what is impress.js</h2>
+<p>现在使用React的开发模式主要有两种——freeMarker+React以及纯静态React页面开发。本文着重介绍纯静态React页面的开发方式。</p>
 
-<p>impress.js 是一个用于展示的前端框架，基于大量 css3 的动画等特性。最大的特点是其基于 transform 来构建，通过空间位置的移动以及旋转来体现变化，视觉冲击性很强。<br/>
-可以在<a href="https://github.com/impress/impress.js?utm_content=buffer4bb8d&amp;utm_source=buffer&amp;utm_medium=twitter&amp;utm_campaign=Buffer">github</a>上查看 example 和 demo。</p>
+<h3 id="toc_1">freeMarker+React</h3>
 
-<h2 id="toc_1">如何用 impress.js 设计 presentation</h2>
+<p>由于以前是用YUI+freeMarker进行开发，为了保证以前的页面都能够正常访问，当重构老页面时会使用这种开发方式。<br/>
+在这种开发模式下由java利用freeMarker生成并Render为html，通过browserify将js打包至资源目录并在browser中加载，React将app render至div中。</p>
 
-<p>其实作者制作的 <a href="http://bartaz.github.io/impress.js/#/bored">demo</a> 就几乎将所有可能用到的技巧都包含了，并在 github 中提供了源码，不过如果不仔细读源码的话很可能走很多弯路。</p>
+<h3 id="toc_2">React纯静态页面</h3>
 
-<h3 id="toc_2">基本思路</h3>
-
-<p>其实作者的想法很巧妙也很简单，impress.js 会根据 html 中 step 的顺序来渲染整个页面，对于每个页面来说只有三种重要的属性——scale，position，rotate。</p>
+<p>利用browserify使用同构的方式进行开发，直接产出html以及js文件放置到资源文件中通过文件路径访问页面。采用这种方式开发有以下优点：</p>
 
 <ul>
-<li>scale 决定了该页的大小。对应属性 width，height</li>
-<li>position 决定了在三维空间中的坐标。对应属性 transform</li>
-<li>rotate 则是旋转方式。对应属性 rotate[XYZ]
-
-<ul>
-<li>绕 X 轴</li>
-<li>绕 Y 轴</li>
-<li>绕 Z 轴</li>
-</ul></li>
+<li>PreRender产出的静态资源文件加载速度快</li>
+<li>前后端只通过ajax进行交互，使得前后端分离，各自约定好接口之后就能进行开发。</li>
+<li>同构的开发模式使得功能模块可以复用，比如模板、node的一些常用模块等等。</li>
 </ul>
 
-<p>impress.js 会根据这些属性将每一页进行渲染，最后从第一页开始一步步进行播放，因此这些属性也就决定了补间动画的形式。在开始写代码之前一定要想好空间结构。</p>
+<p>需要注意代码能同时在browser与node环境下执行，否则会出问题。当使用bom对象时，在componentDidMount生命周期中运行，此时node环境下已经完成了first render。</p>
 
-<h2 id="toc_3">技巧总结</h2>
+<h2 id="toc_3">构建方式</h2>
 
-<p>虽然第一眼看过去很容易，可如果想做一个定制性很强的ppt还是会遇到很多问题，在这里总结一些经验与技巧。</p>
+<p>在node环境下通过<code>React.renderToString</code>方法生成html，通过这种方式生成的标签会带有data-reactid属性，储存server render结果的校验值。<br/>
+当在browser中<code>React.render</code>时会检查校验值是否一致，保证node以及browser环境下render的结果一致。因此开发过程中一定要保证render的结果保持一致，如果需要在browser中插入dom节点，可以使用insert等操作。禁止state以及props在两个环境下值不同。<br/>
+如果通过校验，则React不会重新生成dom，只将事件监听器挂载在对应的节点下。</p>
 
-<h3 id="toc_4">设置补间动画</h3>
+<h2 id="toc_4">应用架构</h2>
 
-<p>在 impress.js 文件中可以设置一些默认值，我会慢慢对这些参数进行说明。</p>
+<p>采用flux的思想来组织应用，具体的方案我推荐facebook的flux或者reflux，这也是现在Github中获星最多的flux实现方案。两者的主要区别是reflux不通过Dispatcher来控制action的分发，reflux中使用了较多的magic来使得代码更加简洁高效。</p>
 
-<pre><code>// some default config values.
-    var defaults = {
-        width: 1024,
-        height: 768,
-        maxScale: 1,
-        minScale: 0,
+<p>如果项目的复杂程度不高（没有多个互相关联的store），我推荐使用Reflux，一般情况下其实一个store就够了，而且避免了处理store之间的通信问题。</p>
 
-        perspective: 1000,
-
-        transitionDuration: 700
-    };
+<pre><code>╔═════════╗       ╔════════╗       ╔═════════════════╗
+║ Actions ║──────&gt;║ Stores ║──────&gt;║ View Components ║
+╚═════════╝       ╚════════╝       ╚═════════════════╝
+     ^                                      │
+     └──────────────────────────────────────┘
 </code></pre>
 
-<h4 id="toc_5">画布大小</h4>
+<p>若项目较为庞大，考虑到代码的可控性、直观，以及更好地去控制各store之间的响应逻辑，使用flux更合适。</p>
 
-<p><code>width</code>与<code>height</code>是每页的基准长度和宽度，与 scale 相乘之后才是该页的大小，设置<strong>偏移量</strong>时需要对<code>width</code>与<code>height</code>进行参考。</p>
+<h3 id="toc_5">优点</h3>
 
-<p>以下是计算 window  真实比例的代码。</p>
+<p>采用flux来构建应用有以下优势：</p>
 
-<pre><code>var computeWindowScale = function ( config ) {
-        var hScale = window.innerHeight / config.height,
-            wScale = window.innerWidth / config.width,
-            scale = hScale &gt; wScale ? wScale : hScale;
+<ol>
+<li>将state在store中统一进行管理，实现业务与组建的分离，代码结构更加清晰。</li>
+<li>由于action在store中进行监听，因此事件不需要再一层层通过props来进行传递，简化代码，而且也更容易将应用拆分成更细粒度的模块。</li>
+<li>尽量使用props的情况下，代码可预测性很强。</li>
+</ol>
 
-        if (config.maxScale &amp;&amp; scale &gt; config.maxScale) {
-            scale = config.maxScale;
-        }
+<h2 id="toc_6">组件开发</h2>
 
-        if (config.minScale &amp;&amp; scale &lt; config.minScale) {
-            scale = config.minScale;
-        }
+<ol>
+<li>react认为组件就是一个状态集，尽可能使得组件只拥有props。</li>
+<li>当组件需要有自己的处理逻辑时需要用到state,比如控制input的value，弹出层自动隐藏、显示的逻辑等等。</li>
+<li>state并不会随着porps的更新而改变，因此在使用 state 时一定要注意是否有 componentWillReceiveProps。</li>
+<li>业务代码为了方便以及速度可以不写 PropTypes，但是可复用的组件使用 PropTypes 来保证组件的正常运行是必要的，组件中的工具方法可以抽取出来写测试用例。</li>
+</ol>
 
-        return scale;
-    };
+<h3 id="toc_7">setState</h3>
+
+<p>state为key-value的集合，一般来说value都是基本类型，当state的数据结构层次很深的时候，操作state就会变成很头疼的事情。</p>
+
+<p><strong>深拷贝</strong></p>
+
+<pre><code>// shallow copy
+var state = deepCopy(this.state);
+state.valueWantChange = vale;
+this.setState(state);
 </code></pre>
 
-<p>可以知道画布会随着<code>window</code>的缩放而自动进行缩放，<code>maxScale</code>决定了画布最大值，而<code>minScale</code>决定了最小为多大。千万不要将这里的<code>scale</code>与<code>data-scale</code>搞混淆。</p>
+<p>深拷贝方法没有问题，但由于deepCopy效率很低，一般都不推荐使用。</p>
 
-<h4 id="toc_6">透明度</h4>
+<p><strong>forceUpdate</strong></p>
 
-<p><code>.impress-enabled .step</code> 调整 opacity 来控制非当前页的透明度</p>
+<pre><code>this.state.valueWantChange = vale;
+this.forceUpdate(); // this.setState(this.state);
+</code></pre>
 
-<h4 id="toc_7">渐变动画时间</h4>
-
-<p>需要注意的是在更改 <code>default</code> <code>transitionDuration</code>之后还需要在 css 中修改 <code>transitionDuration</code>。这样才能保证动画的同步。</p>
-
-<h3 id="toc_8">实用的 class</h3>
-
-<h4 id="toc_9">body 状态</h4>
+<p>在以下两种情况会用到 forceUpdate</p>
 
 <ul>
-<li><code>impress-disabled</code> is added to body element by the impress.js script<br/></li>
-<li><code>impress-enabled</code> after init() function is called</li>
+<li>手动更改了 state 之后需要触发 render</li>
+<li>做了除更改props和state之外的操作后，需要render。</li>
 </ul>
 
-<h4 id="toc_10">page 状态</h4>
+<p>但是使用forceUpdate 会跳过 shouldComponentUpdate 的过程，会触发子组件的所有lifeCycle方法（包括shouldComponentUpdate）从而造成性能的浪费。因此为了组件更加清晰高效，应该避免使用forceUpdate。</p>
 
-<p>additional past, present and future classes are added to step elements。通过这三个状态可以做出很酷的动画效果。</p>
+<p><strong>Immutability Helpers</strong></p>
 
-<ul>
-<li><code>future</code> class appears on steps that were not yet visited</li>
-<li><code>present</code> class appears on currently visible step - it&#39;s different from active class as present class is added when transition finishes (step is entered)</li>
-<li><code>past</code> class is added to already visited steps (when the step is left)</li>
-</ul>
+<p>我推荐使用React.addons<code>import react from &#39;react/addons&#39;</code>来管理<code>state</code>。<br/>
+You can alleviate this by only copying objects that need to be changed and by reusing the objects that haven&#39;t changed. </p>
 
-<h2 id="toc_11">插件推荐</h2>
+<pre><code>var newData = React.addons.update(myData, {
+  x: {y: {z: {$set: 7}}},
+  a: {b: {$push: [9]}}
+});
+this.setState(newData);
+</code></pre>
 
-<ul>
-<li>impress-progress.js 显示 ppt 的进度条</li>
-</ul>
+<p>下面是update的基本语法。如果用过mongo应该对此十分熟悉。</p>
+
+<p><code>React.addons.update</code><br/>
+* <code>{$push: array}</code> push() all the items in array on the target.<br/>
+* <code>{$unshift: array}</code> unshift() all the items in array on the target.<br/>
+* <code>{$splice: array of arrays}</code> for each item in arrays call splice() on the target with the parameters provided by the item.<br/>
+* <code>{$set: any}</code> replace the target entirely.<br/>
+* <code>{$merge: object}</code> merge the keys of object with the target.<br/>
+* <code>{$apply: function}</code> passes in the current value to the function and updates it with the new returned value.</p>
 
                         
                       </div>
@@ -216,7 +220,7 @@
                     <span class="date">2015/9/16</span>
                     <span>posted in&nbsp;</span> 
           				  
-          					    <span class="posted-in"><a href='frontend.html'>frontend</a></span>
+          					    <span class="posted-in"><a href='%E7%94%9F%E6%B4%BB.html'>react</a></span>
           				   
                   </div>
                   <div class="more-right right">
@@ -581,18 +585,278 @@ format.writeFeature(feature);
                 </div>
               </div><!-- article -->
         
+			<div class="article">
+                <a class="clearlink" href="14423829784031.html">
+                
+                  <h1>Redux basic tutorial</h1>
+                  <div class="a-content">
+                      
+                      <div class="a-content-text">
+                        
+                        	<blockquote>
+<p>本文的读者为了解flux概念，熟悉react，了解es6语法的同学</p>
+</blockquote>
+
+<p><code>redux</code> 是最近很火的一个 <code>flux</code> 框架，短短的一个月现在已经有2900+的 star 了，watch之后每天收到几百封 pr 的邮件，废话就不多说了。<br/>
+为什么要用 <code>redux</code> ，请看连接 <a href="https://medium.com/@dan_abramov/the-evolution-of-flux-frameworks-6c16ad26bb31">The Evolution of Flux Frameworks</a>。</p>
+
+<p><strong>主要特点</strong></p>
+
+<ul>
+<li>Everything (Stores, Action Creators, configuration) is hot reloadable. —— 配合起 hotloader 应该特别爽，虽然现在用的是 <code>browserify</code>，好处感觉并不明显。</li>
+<li><code>store</code> 中的数据不受限制，可以是 <code>number</code> <code>object</code> <code>array</code> 等等，废话，因为它的 <code>store</code> 只是简单的函数。</li>
+<li>提供 <code>devtools</code> ，监控 <code>action</code> 的触发以及 <code>state</code> 的变化。</li>
+<li>源码清晰简单，轻量级，根本不需要文档，直接看源码就行了....缺点就是如果看不懂源码，光看文档会觉得不够清晰。</li>
+<li><code>api</code> 很精简，不用记茫茫多的 <code>api</code></li>
+<li>every thing is simple function</li>
+<li><code>connecter</code> 与 <code>provider</code> 这两个东西用起来总觉得很繁琐，不那么优雅。</li>
+</ul>
+
+<p>下面通过写的一个简单counter的例子 介绍 <code>redux</code> 的核心方法以及一些需要注意的地方。</p>
+
+<ul>
+<li>同步与异步两种actionCreator</li>
+<li>middleware的使用</li>
+<li>dispatch actions </li>
+<li>拿到并同步state</li>
+</ul>
+
+<p>代码放在<a href="https://github.com/yeatszhang/redux-tutorial">https://github.com/yeatszhang/redux-tutorial</a>， 需要安装gulp </p>
+
+<p>代码是基于分支 <code>v1.0.0-rc</code> api略微有些区别，详情见 <a href="https://github.com/gaearon/redux/pull/195">Breaking API changes for 1.0</a>。</p>
+
+<h2 id="toc_0">actionsCreator</h2>
+
+<p>actions creator 是用来生成 action 的函数，在默认情况下可以接受返回<code>object</code>或者<code>function</code> 的函数，很多人学习flux的时候把action与actionCreator弄混淆....：</p>
+
+<pre><code>// 直接返回object
+actionCreators.addTodo = function(text) {
+  return {
+    type: types.ADD_TODO,
+    text
+  };
+}
+
+// 返回函数
+actionCreators.incrementAsync = function() {
+  return (dispatch, getState) =&gt; {
+    // actionCreator中可以通过getState获得当前的state
+    console.log(getState());
+    // 异步action
+    setTimeout(() =&gt; {
+      dispatch({
+        type: INCREMENT_COUNTER2,
+      });
+    }, 1000);
+  };
+};
+
+</code></pre>
+
+<p>在没有使用任何 <code>middleware</code> 的情况下，只有这有两种 <code>action</code> 可以被 <code>dispatch</code>。</p>
+
+<h2 id="toc_1">app</h2>
+
+<p>在动态内容的最外层应该使用Provider进行包裹，provider接收store作为参数，注意children是一个<code>函数</code>并不是<code>reactElement</code>。<br/>
+<code>provider</code>将store作为context往子节点进行传递，并实现<code>store</code>的热替换。因此在provider内的组件其实可以不通过connect来拿到dispatch以及state，而直接通过context拿到store对象，不过作者不推荐这么做。</p>
+
+<pre><code>import React from &#39;react&#39;;
+import { createStore, applyMiddleware, combineReducers } from &#39;redux&#39;;
+// redux midlleware repositories
+import thunk from &#39;redux-thunk&#39;;
+// 将 redux 与 react 相关的部分，如 connector provider 单独抽取出来
+import { Provider } from &#39;react-redux&#39;;
+import reducers from &#39;../reducers&#39;;
+import CounterApp from &#39;./CounterApp.js&#39;;
+import logMiddleware from &#39;../middleWares/logMiddleware.js&#39;;
+
+const reducer = combineReducers(reducers);
+const createStoreWithMiddleware = applyMiddleware(thunk, logMiddleware)(createStore);
+const store = createStoreWithMiddleware(reducer);
+// 使用middleWare thunk， 如果没有自定义中间层的需求可以直接写
+// const store = createStore(reducer);
+
+class App extends React.Component {
+  render() {
+    return (
+      &lt;Provider store={store}&gt;
+        {() =&gt; &lt;CounterApp /&gt;}
+      &lt;/Provider&gt;
+    );
+  }
+}
+</code></pre>
+
+<h2 id="toc_2">smart component</h2>
+
+<p>smart component拥有两个特点：</p>
+
+<ol>
+<li>自动关联store中的state并自动re-render</li>
+<li>可以通过dispatch来分发事件，从而触发store的更新</li>
+</ol>
+
+<p>刚接触redux的同学肯定会觉得这个connect很难以理解。还是在代码里面说把。。。</p>
+
+<pre><code>/**
+ * Created by yichizhang on 15/7/26.
+ */
+
+import React, { Component } from &#39;react&#39;;
+import { bindActionCreators } from &#39;redux&#39;;
+import { Connector } from &#39;react-redux&#39;;
+import Counter from &#39;../components/Counter&#39;;
+import actionCreators1 from &#39;../actionCreators/actionCreators1.js&#39;;
+import actionCreators2 from &#39;../actionCreators/actionCreators2.js&#39;;
+
+// state 是各reducer中state的集合
+function select(state) {
+  // 从各reducer中挑选出component需要监听的state
+  return {
+    counter1: state.reducer1.counter,
+    counter2: state.reducer2.counter,
+  };
+}
+
+export default class CounterApp extends Component {
+  // select函数的返回值会与dispatch组装程一个object作为参数
+  // 从这里看出connector就是帮忙拿到provider中store的dispatch方法以及挑选出需要使用的state
+  renderChild({ counter1, counter2, dispatch}) {
+    // 个人觉得这样使用action十分不方便，尤其是当组件只需要触发actions不需要监听store的变化的时候。我会偷懒通过context去拿到dispatch~~
+    const actions1 = bindActionCreators(actionCreators1, dispatch);
+    const actions2 = bindActionCreators(actionCreators2, dispatch);
+    const props = { ...actions1, ...actions2, counter1, counter2 };
+    // 所有的action以及state都会以props的形式提供给Counter，然后在Counter里面就可以为所欲为了~
+    return &lt;Counter {...props} /&gt;;
+  }
+
+  render() {
+    return (
+      &lt;Connector select={select}&gt;
+        {this.renderChild}
+      &lt;/Connector&gt;
+    );
+  }
+}
+
+</code></pre>
+
+<h2 id="toc_3">reducer</h2>
+
+<p>redux认为程序员不需要去写store中的逻辑而只需要写明对state的处理逻辑就好：<br/>
+<code><br/>
+old  sate =&gt; action  =&gt; new state<br/>
+</code><br/>
+这是一个完全同步的过程。reducer只需要声明初始状态以及state在接收到action之后的改变规则就可以了。</p>
+
+<pre><code>import React from &#39;react/addons&#39;;
+import {INCREMENT_COUNTER1, DECREMENT_COUNTER1} from &#39;../constants/actionsTypes.js&#39;;
+const update = React.addons.update;
+
+// state可以是任何类型
+const initialState = {
+  counter: 0,
+};
+
+// reducer只是一个简单的switch方法
+export default function counter(state = initialState, action = null) {
+  switch (action.type) {
+    case INCREMENT_COUNTER1:
+      // 需要注意的是connector当select中的state发生变化时会做一个shallow equal的操作，
+      // 所以如果需要操作引用值的时候一定不能直接赋值，需要使用addon中的update或者immutable.js，知道看到这两个工具又不想继续学了..其实很简单
+      // 这样可以大大避免重复的render，从而提高性能
+      return update(state, {
+        counter: {
+          $set: state.counter + 1,
+        },
+      });
+    case DECREMENT_COUNTER1:
+      return update(state, {
+        counter: {
+          $set: state.counter - 1,
+        },
+      });
+    default:
+      return state;
+  }
+}
+
+</code></pre>
+
+<h2 id="toc_4">middleWare</h2>
+
+<p>感兴趣的同学可以看看，一般来说默认的thunk就够用了。我在例子里加了个log的中间层</p>
+
+<pre><code>// 打印触发的action
+function logMiddleware() {
+  // 这里的next是下一个middleWare
+  return function(next) {
+    return function(action) {
+      // 打印此action并使用下一个middleWare处理该action
+      console.log(action);
+      next(action);
+    };
+  };
+}
+
+export default logMiddleware;
+
+// 下面是默认的thunk middleWare
+
+function thunkMiddleware(_ref) {
+  var dispatch = _ref.dispatch;
+  var getState = _ref.getState;
+
+  return function (next) {
+    return function (action) {
+      // 如果是函数则将dispatch与getState作为参数执行函数，否则交给写一个middleware处理
+      return typeof action === &#39;function&#39; ? action(dispatch, getState) : next(action);
+    };
+  };
+}
+</code></pre>
+
+<h2 id="toc_5">结语</h2>
+
+<p>其实redux不明白的地方直接看源码更好，redux的代码量很小而且组织也很清晰，建议大家都去看，不过作者貌似函数式编程的思维很重，大量使用修饰器的语法，还有reduce~ 挺绕的~</p>
+
+<p>之后会总结自己阅读redux源码的一些心得，以及各功能模块的实现原理~</p>
+
+                        
+                      </div>
+                  </div>
+                </a>
+                <div class="read-more clearfix">
+                  <div class="more-left left">
+                  
+                    <span class="date">2015/9/16</span>
+                    <span>posted in&nbsp;</span> 
+          				  
+          					    <span class="posted-in"><a href='%E7%94%9F%E6%B4%BB.html'>redux</a></span>
+          				   
+                  </div>
+                  <div class="more-right right">
+                  <span class="comments">
+                      
+
+                       
+                  </span>
+                  </div>
+                </div>
+              </div><!-- article -->
+        
               
 
 
 			<div class="row">
 			  <div class="large-6 columns">
 			  <p class="text-left" style="padding-top:25px;">
-			   
+			   <a href="all.html">&laquo; Prev Page</a>  
 			  </p>
 			  </div>
 			  <div class="large-6 columns">
 			<p class="text-right" style="padding-top:25px;">
-			
+			 <a href="all_2.html">&raquo; Next Page</a> 
 			</p>
 			  </div>
 			</div>
